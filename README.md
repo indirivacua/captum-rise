@@ -65,9 +65,7 @@ The RISE implementation builds upon this generalized version with a design that 
 
 ## RISE
 
-The RISE class is a generic class which allows training any interpretable model based on by sub-sampling the input image via random masks and recording its response to each of the masked images. The constructor takes only the model forward function. The RISE class makes certain assumptions to the generic SurrogateModelAttribution class in order to match the structure of other attribution methods and allow easier switching between methods.
-
-The RISE class makes certain assumptions to the generic FeatureAblation class in order to match the structure of other attribution methods and allow easier switching between methods.
+The RISE class is a generic class which allows training any interpretable model based on by sub-sampling the input image via random masks and recording its response to each of the masked images. The constructor takes only the model forward function. The RISE class makes certain assumptions to the generic FeatureAblation class in order to match the structure of other attribution methods and allow easier switching between methods.
 
 ### **Constructor:**
 

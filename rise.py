@@ -11,7 +11,7 @@ from captum.attr._core.feature_ablation import FeatureAblation
 from captum.log import log_usage
 
 TupleOfTensors = Tuple[torch.Tensor]
-InputShape = Tuple[int]
+InputShape = Tuple[int, int]
 InputShapes = List[InputShape]
 InputTypes = List[torch.dtype]
 
@@ -267,7 +267,7 @@ class RISE(FeatureAblation):
 
             if show_progress:
                 rise_progress.update()
-        heatmap_set = tuple_to_device(heatmap_set, "cpu")
+        # heatmap_set = tuple_to_device(heatmap_set, "cpu")
         if show_progress:
             rise_progress.close()
 

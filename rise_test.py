@@ -95,6 +95,7 @@ if torch.cuda.is_available():
   model.to(device)
   inputs = tuple(i.to(device) for i in inputs)
 
+os.makedirs('results', exist_ok=True)
 
 from rise import RISE
 rise = RISE(model)
@@ -105,7 +106,7 @@ for n_masks in [2**11,2**12,2**13]:#[2**7,2**10,2**12,2**13,2**14]:
     for initial_mask_shape in [(2,2),(4,4),(8,8),(16,16)]:#[(4,4), (7,7), (8,8), (15,15)]
         print(n_masks,initial_mask_shape)
         start_time = perf_counter()
-        heatmap = rise.attribute(inputs, n_masks=n_masks, initial_mask_shapes=(initial_mask_shape,), target=pred_label_idx, show_progress=True)
+        heatmap = rise.attribute(inputs, n_masks=n_masks, initial_mask_shapes=(initial_mask_shape,), target=pred_label_idx, show_progress=True).cpu()
 
         print("Elapsed time: ", perf_counter() - start_time)
         print("Heatmap shape: ", heatmap.shape)
