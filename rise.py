@@ -248,8 +248,8 @@ class RISE(FeatureAblation):
             masket_input_set = tuple(m * input for m, input in zip(mask_set, input_set))
             # compute scores, obtain score for each sample in batch
             # detach to avoid computing backward and using more memory
-            # TODO find a way to avoid forward_func from being in training state and returning the grad_fn
-            output = self.forward_func(*masket_input_set).detach()
+            with torch.no_grad():
+                output = self.forward_func(*masket_input_set).detach()
             mask_weight = output[range(batch_size), target]
 
             # update heatmaps with weight of mask
