@@ -197,7 +197,7 @@ class RISE(FeatureAblation):
     @log_usage()
     def attribute(  # type: ignore
         self,
-        input_set: TensorOrTupleOfTensorsGeneric,
+        inputs: TensorOrTupleOfTensorsGeneric,
         n_masks: int,
         initial_mask_shapes: TensorOrTupleOfTensorsGeneric,
         baselines: BaselineType = None,
@@ -219,19 +219,19 @@ class RISE(FeatureAblation):
                             be aligned appropriately.
         """
         # Generate mask sets
-        input_set = ensure_tuple(input_set)
-        mask_set_config = MaskSetConfig.from_input(input_set, initial_mask_shapes)
+        inputs = ensure_tuple(inputs)
+        mask_set_config = MaskSetConfig.from_input(inputs, initial_mask_shapes)
         mask_sets = generate_mask_sets(n_masks, mask_set_config)
 
         # initialize heatmap set
-        batch_size = input_set[0].shape[0]
+        batch_size = inputs[0].shape[0]
         heatmap_set = tuple(
             torch.zeros(batch_size, *input_shape)
             for input_shape in mask_set_config.input_shapes
         )
 
         # send heatmaps to same device as inputs
-        input_device = input_set[0].device
+        input_device = inputs[0].device
         heatmap_set = tuple_to_device(heatmap_set, input_device)
 
         if show_progress:
@@ -245,11 +245,11 @@ class RISE(FeatureAblation):
             # send mask to same device as inputs
             mask_set = tuple_to_device(mask_set, input_device)
             # generate masked inputs
-            masket_input_set = tuple(m * input for m, input in zip(mask_set, input_set))
+            masked_inputs = tuple(m * input for m, input in zip(mask_set, inputs))
             # compute scores, obtain score for each sample in batch
             # detach to avoid computing backward and using more memory
             with torch.no_grad():
-                output = self.forward_func(*masket_input_set).detach()
+                output = self.forward_func(*masked_inputs).detach()
             mask_weight = output[range(batch_size), target]
 
             # update heatmaps with weight of mask
@@ -274,7 +274,7 @@ class RISE(FeatureAblation):
         if len(heatmap_set) == 1:
             heatmap_set = heatmap_set[0]
 
-        return heatmap_set
+        return heatmap_set.unsqueeze(1)
 
 
 def generate_mask_sets(

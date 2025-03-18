@@ -96,7 +96,7 @@ for n_masks in n_masks_list:
             target=pred_label_idx,
             show_progress=True,
         )
-        heatmap = heatmap.cpu()
+        heatmap = heatmap.squeeze().cpu()
 
         print("Elapsed time: ", perf_counter() - start_time)
         print("Heatmap shape: ", heatmap.shape)
